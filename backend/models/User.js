@@ -16,6 +16,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    avatar: {
+        type: String,
+        default: 'default-avatar.png'
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'user'],
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -23,8 +32,16 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 12);
+    if (this.isModified('role')) {
+        throw new Error('Role cannot be modified');
+    }
+
+    if (!this.isModified('password')) {
+        return next();
+    } else {
+        this.password = await bcrypt.hash(this.password, 12);
+    }
+    
     next();
 });
 

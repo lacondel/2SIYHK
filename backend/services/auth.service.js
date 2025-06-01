@@ -5,10 +5,19 @@ const jwt = require('jsonwebtoken');
 class AuthService {
     // Registration
     async register(login, email, password) {
-        const userExists = await User.findOne({ email });
-        if (userExists) throw new Error('User already exists');
+        const mailVerification = await User.findOne({ email });
+        if (mailVerification) throw new Error('Email already registered');
 
-        const user = new User({ login, email, password });
+        const loginVerification = await User.findOne({ login });
+        if (loginVerification) throw new Error('Login already taken');
+
+        const user = new User({ 
+            login, 
+            email, 
+            password,
+            role: 'user'
+        });
+        
         await user.save();
         return user;
     }
@@ -21,8 +30,25 @@ class AuthService {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) throw new Error('Invalid password');
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return { token, user };
+        const token = jwt.sign(
+            { 
+                id: user._id,
+                role: user.role 
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+
+        return { 
+            token, 
+            user: {
+                id: user._id,
+                login: user.login,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar
+            }
+        };
     }
 }
 
