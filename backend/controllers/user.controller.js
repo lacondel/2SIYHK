@@ -1,64 +1,49 @@
+const asyncHandler = require('express-async-handler');
 const userService = require('../services/user.service');
 
 // Getting user data by ID
-exports.getUserById = async (req, res) => {
-    try {
-        const user = await userService.getUserById(req.userId);
-        res.status(200).json(user);
-    } catch (err) {
-        if (err.message === 'User not found') {
-            res.status(404).json({ error: err.message });
-        } else {
-            res.status(500).json({ error: 'Failed to get user data' });
-        }
-    }
-};
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await userService.getUserById(req.userId);
+    res.status(200).json(user);
+});
 
 // User update (login, avatar)
-exports.updateUser = async (req, res) => {
-    try {
-        const updates = req.body;
-        const updatedUser = await userService.updateUser(req.userId, updates);
-        res.status(200).json(updatedUser);
-    } catch (err) {
-        if (err.message === 'User not found') {
-            res.status(404).json({ error: err.message });
-        } else {
-            res.status(500).json({ error: 'Failed to update user' });
-        }
-    }
-};
+const updateUser = asyncHandler(async (req, res) => {
+    const updates = req.body;
+
+    const updatedUser = await userService.updateUser(req.userId, updates);
+    res.status(200).json(updatedUser);
+});
 
 // Password change
-exports.changePassword = async (req, res) => {
-    try {
-        const { oldPassword, newPassword } = req.body;
-        const result = await userService.changePassword( req.userId, oldPassword, newPassword);
-        res.status(200).json(result);
-    } catch (err) {
-        if (err.message === 'User not found') {
-            res.status(404).json({ error: err.message });
-        } else if (err.message === 'Current password is incorrect') {
-            res.status(401).json({ error: err.message });
-        } else {
-            res.status(500).json({ error: 'Failed to change password' });
-        }
-    }
-};
+const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    const result = await userService.changePassword( req.userId, oldPassword, newPassword);
+    res.status(200).json(result);
+});
 
 // User deletion
-exports.deleteUser = async (req, res) => {
-    try {
-        const { password } = req.body;
-        const result = await userService.deleteUser(req.userId, password);
-        res.status(200).json(result);
-    } catch (err) {
-        if (err.message === 'User not found') {
-            res.status(404).json({ error: err.message });
-        } else if (err.message === 'Invalid password') {
-            res.status(401).json({ error: err.message });
-        } else {
-            res.status(500).json({ error: 'Failed to delete user' });
-        }
-    }
+const deleteUser = asyncHandler(async (req, res) => {
+    const { password } = req.body;
+
+    const result = await userService.deleteUser(req.userId, password);
+    res.status(200).json(result);   
+});
+
+// User deletion by admin
+const deleteUserByAdmin = asyncHandler(async (req, res) => {
+    const userIdToDelete = req.params.id;
+    const adminId = req.userId;
+
+    const result = await userService.deleteUserByAdmin(userIdToDelete, adminId);
+    res.status(200).json(result);
+});
+
+module.exports = {
+    getUserById,
+    updateUser,
+    changePassword,
+    deleteUser,
+    deleteUserByAdmin
 };
