@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 class UserService {
@@ -59,6 +59,11 @@ class UserService {
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
             throw new Error('Current password is incorrect');
+        }
+
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            throw new Error('New password must be different from the current one');
         }
 
         user.password = newPassword;
