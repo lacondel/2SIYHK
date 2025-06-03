@@ -52,20 +52,11 @@ const deletePostByAdmin = asyncHandler(async (req, res) => {
     res.status(200).json(result);
 });
 
-// Getting all posts by user ID
-const getUserPosts = asyncHandler(async (req, res) => {
-    const userId = req.params.userId;
-    
-    const posts = await postService.getUserPosts(userId);
-    res.status(200).json(posts);
-});
-
 module.exports = {
     createPost,
     getAllPosts,
     getPostById,
     updatePost,
     deletePost,
-    deletePostByAdmin,
-    getUserPosts
+    deletePostByAdmin
 };

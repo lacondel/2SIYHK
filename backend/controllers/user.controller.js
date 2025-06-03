@@ -33,11 +33,19 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 // User deletion by admin
 const deleteUserByAdmin = asyncHandler(async (req, res) => {
-    const userIdToDelete = req.params.id;
+    const userIdToDelete = req.params.userId;
     const adminId = req.user._id;
 
     const result = await userService.deleteUserByAdmin(userIdToDelete, adminId);
     res.status(200).json(result);
+});
+
+// Getting all user posts
+const getUserPosts = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    
+    const posts = await userService.getUserPosts(userId);
+    res.status(200).json(posts);
 });
 
 module.exports = {
@@ -45,5 +53,6 @@ module.exports = {
     updateUser,
     changePassword,
     deleteUser,
-    deleteUserByAdmin
+    deleteUserByAdmin,
+    getUserPosts
 };

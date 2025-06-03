@@ -18,6 +18,24 @@ class UserService {
         return user;
     }
 
+    // Getting all user posts
+    async getUserPosts(userId) {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new Error('Invalid user ID');
+        }
+
+        const posts = await Post.find({ author: userId })
+            .sort({ createdAt: -1 })
+            .populate('author', 'login avatar')
+            .populate('comments.author', 'login avatar');
+
+        if (!posts) {
+            throw new Error('Posts not found');
+        }
+
+        return posts;
+    }
+
     // User update (login, avatar)
     async updateUser(userId, updates) {
         if (!mongoose.Types.ObjectId.isValid(userId)) {

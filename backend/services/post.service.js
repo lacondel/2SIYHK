@@ -33,24 +33,6 @@ class PostService {
         return post;
     }
 
-    // Getting all posts by user ID
-    async getUserPosts(userId) {
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new Error('Invalid user ID');
-        }
-
-        const posts = await Post.find({ author: userId })
-            .sort({ createdAt: -1 })
-            .populate('author', 'login avatar')
-            .populate('comments.author', 'login avatar');
-
-        if (!posts) {
-            throw new Error('Posts not found');
-        }
-
-        return posts;
-    }
-
     // Updating a post
     async updatePost(postId, userId, updates) {
         if (!mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(userId)) {
