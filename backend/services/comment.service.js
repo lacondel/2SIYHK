@@ -50,7 +50,7 @@ class CommentService {
         }
 
         const comment = post.comments[commentIndex];
-        if (comment.author.toString() !== userId) {
+        if (comment.author.toString() !== userId.toString()) {
             throw new Error('Access denied: you can only delete your own comments');
         }
 

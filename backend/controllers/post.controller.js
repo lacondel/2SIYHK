@@ -4,7 +4,7 @@ const postService = require('../services/post.service');
 // Post creation
 const createPost = asyncHandler(async (req, res) => {
     const { title, content, tags } = req.body;
-    const authorId = req.userId;
+    const authorId = req.user._id;
 
     const post = await postService.createPost(title, content, authorId, tags);
     res.status(201).json(post);
@@ -27,7 +27,7 @@ const getPostById = asyncHandler(async (req, res) => {
 // Updating a post
 const updatePost = asyncHandler(async (req, res) => {
     const postId = req.params.id;
-    const userId = req.userId;
+    const userId = req.user._id;
     const updates = req.body;
 
     const updatedPost = await postService.updatePost(postId, userId, updates);
@@ -37,7 +37,7 @@ const updatePost = asyncHandler(async (req, res) => {
 // Deleting a post
 const deletePost = asyncHandler(async (req, res) => {
     const postId = req.params.id;
-    const userId = req.userId;
+    const userId = req.user._id;
 
     const result = await postService.deletePost(postId, userId);
     res.status(200).json(result);
@@ -46,10 +46,18 @@ const deletePost = asyncHandler(async (req, res) => {
 // Deleting a post by admin
 const deletePostByAdmin = asyncHandler(async (req, res) => {
     const postId = req.params.id;
-    const adminId = req.userId;
+    const adminId = req.user._id;
 
     const result = await postService.deletePostByAdmin(postId, adminId);
     res.status(200).json(result);
+});
+
+// Getting all posts by user ID
+const getUserPosts = asyncHandler(async (req, res) => {
+    const userId = req.params.userId;
+    
+    const posts = await postService.getUserPosts(userId);
+    res.status(200).json(posts);
 });
 
 module.exports = {
@@ -58,5 +66,6 @@ module.exports = {
     getPostById,
     updatePost,
     deletePost,
-    deletePostByAdmin
+    deletePostByAdmin,
+    getUserPosts
 };

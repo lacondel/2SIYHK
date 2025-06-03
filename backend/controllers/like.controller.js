@@ -4,7 +4,7 @@ const likeService = require('../services/like.service');
 // Add/remove like
 const toggleLike = asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    const userId = req.userId;
+    const userId = req.user._id;
 
     const result = await likeService.toggleLike(postId, userId);
     res.status(200).json(result);

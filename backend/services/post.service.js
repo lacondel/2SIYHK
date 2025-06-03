@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Post = require('../models/Post');
 const User = require('../models/User');
 
@@ -30,6 +31,24 @@ class PostService {
         const post = await Post.findById(postId).populate('author', 'login');
         if (!post) throw new Error('Post not found');
         return post;
+    }
+
+    // Getting all posts by user ID
+    async getUserPosts(userId) {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new Error('Invalid user ID');
+        }
+
+        const posts = await Post.find({ author: userId })
+            .sort({ createdAt: -1 })
+            .populate('author', 'login avatar')
+            .populate('comments.author', 'login avatar');
+
+        if (!posts) {
+            throw new Error('Posts not found');
+        }
+
+        return posts;
     }
 
     // Updating a post
