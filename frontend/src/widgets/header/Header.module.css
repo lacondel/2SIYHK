@@ -1,0 +1,42 @@
+header {
+  padding: 20px;
+  border-bottom: 1px solid #a97bff;
+  margin-bottom: 60px;
+  background-color: #1e1f29;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header ul {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header ul li {
+  margin-left: 30px;
+}
+
+.header ul li a {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+}
+
+.header ul li a:hover {
+  color: #6e20ff;
+}
+
+.header a:hover {
+    color: #6e20ff;
+  }
+
+.header ul li a svg {
+  margin-right: 5px;
+}
